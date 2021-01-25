@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xh.onetwothreeupload.dao.SaleDao">
+
+
+    <select id="getSaleList" resultType="com.xh.onetwothreeupload.to.SaleDTO">
+select top 10
+a.dates as date ,
+c.businesscode as salecode ,
+c.businessname as salename ,
+'C44000074' as purcode ,
+'广东广集医药有限公司' as purname ,
+d.goodscode as goodcode ,
+d.goodsname as goodname ,
+d.GoodsSpec as goodspec ,
+e.batchcode as batchcode ,
+b.Num as sum ,
+b.unit as unit ,
+b.price ,
+b.amount ,
+d.manufacturer  ,
+f.approvalNo ,
+'' as createtime
+from  purinmt a
+join purindt b on a.billno=b.billno
+join  businessdoc c on a.SuppliersId=c.businessid
+join goodsdoc d on d.goodsid=b.goodsid
+join  goodsattr f on b.goodsid=f.goodsid
+join  BatchCode e on e.AngleId=b.AngleId and e.GoodsId=b.GoodsId
+
+    </select>
+</mapper>

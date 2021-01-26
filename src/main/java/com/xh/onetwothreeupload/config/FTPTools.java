@@ -42,6 +42,7 @@ public class FTPTools {
             try {
                 //2 检查工作目录是否存在
                 if (ftpClient.changeWorkingDirectory("/")) {
+
                     // 3 检查是否上传成功
                     if (storeFile(ftpClient, saveName, inputStream)) {
                         flag = true;

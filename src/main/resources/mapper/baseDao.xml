@@ -5,34 +5,35 @@
 
 
     <select id="getSaleList" resultType="com.xh.onetwothreeupload.to.SaleDTO">
-      select top 10
+         select
 a.dates as date ,
 'C44000074' as salecode ,
 '广东广集医药有限公司' as salename ,
-'c.businesscode' as purcode ,
-'c.businessname' as purname ,
+c.businesscode as purcode ,
+c.businessname as purname ,
 d.goodscode as goodcode ,
 d.goodsname as goodname ,
-'' as goodspec ,
-'' as batchcode ,
-'' as sum ,
-'' as unit ,
-'' as price ,
-'' as amount ,
-'' as manufacturer  ,
-'' as approvalNo ,
- a.Address as adress,
+d.GoodsSpec as goodspec ,
+e.batchcode as batchcode ,
+b.Num as sum ,
+b.unit as unit ,
+b.price ,
+b.amount ,
+d.manufacturer  ,
+f.approvalNo ,
+a.address,
 CONVERT(varchar,GETDATE(),120)  as createtime
-from  saleoutmt a
+from  saleoutMt a
 join saleoutdt b on a.billno=b.billno
 join  businessdoc c on a.clientid=c.businessid
 join goodsdoc d on d.goodsid=b.goodsid
 join  goodsattr f on b.goodsid=f.goodsid
 join  BatchCode e on e.AngleId=b.AngleId and e.GoodsId=b.GoodsId
 where DateDiff(dd,dates,getdate())between 0 and  120
+and a.orgid='O2FK3SIYTRV' and d.onethree='Y'
     </select>
     <select id="getPurList" resultType="com.xh.onetwothreeupload.to.PurDTO">
-        select top 10
+        select
 a.dates as date ,
 c.businesscode as salecode ,
 c.businessname as salename ,
@@ -56,9 +57,10 @@ join goodsdoc d on d.goodsid=b.goodsid
 join  goodsattr f on b.goodsid=f.goodsid
 join  BatchCode e on e.AngleId=b.AngleId and e.GoodsId=b.GoodsId
 where DateDiff(dd,dates,getdate())between 0 and  120
+ and a.orgid='O2FK3SIYTRV' and d.onethree='Y'
     </select>
     <select id="getStoreList" resultType="com.xh.onetwothreeupload.to.StoreDTO">
-select top 10
+select
 GETDATE() as date ,
 'C44000074' as businessCode ,
 '广东广集医药有限公司' as businessName ,
@@ -76,8 +78,8 @@ CONVERT(varchar,GETDATE(),120)  as createTime
 from   goodsdoc a
 join  goodsattr b on a.goodsid=b.goodsid
 join  BatchCode c on a.GoodsId=c.GoodsId
-join AngleBalance e on c.AngleId=e.AngleId and e.GoodsId=a.GoodsId
-join PGPrice f on f.goodsid=a.goodsid and isbase='Y'
+join AngleBalance e on c.AngleId=e.AngleId and e.GoodsId=a.GoodsId and e.locatid='L336FAZHU2N'
+join PGPrice f on f.goodsid=a.goodsid and isbase='Y' and a.onethree='Y'
 
     </select>
 </mapper>

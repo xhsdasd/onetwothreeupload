@@ -41,7 +41,7 @@ public class SaleDTO {
 @ExcelProperty(value ="金额 ")
     private String amount ;//产品生产厂家名称"
     @ExcelProperty(value ="收货地址")
-    private String adress;//实际配送地址
+    private String address;//实际配送地址
     @ExcelProperty(value ="生产厂家")
     private String manufacturer  ;//官方规定产品特有编码 "
 @ExcelProperty(value ="批准文号 ")

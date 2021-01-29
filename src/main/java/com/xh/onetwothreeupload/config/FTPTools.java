@@ -68,7 +68,7 @@ public class FTPTools {
         if (ftpClient.isConnected()) {
             try {
                 ftpClient.disconnect();
-                log.error("已关闭连接");
+//                log.error("已关闭连接");
             } catch (IOException e) {
                 log.error("没有关闭连接");
                 e.printStackTrace();
@@ -94,7 +94,7 @@ public class FTPTools {
             ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
             ftpClient.setControlEncoding("UTF-8");
             if (ftpClient.login("C44000074","DSCNC44000074!#$")) {
-                log.info("连接ftp成功");
+//                log.info("连接ftp成功");
                 flag = true;
             } else {
                 log.error("连接ftp失败，可能用户名或密码错误");
@@ -124,11 +124,11 @@ public class FTPTools {
         try {
             if (ftpClient.storeFile(saveName, fileInputStream)) {
                 flag = true;
-                log.error("上传成功");
+                log.error(saveName+"上传成功");
                 disconnect(ftpClient);
             }
         } catch (IOException e) {
-            log.error("上传失败");
+            log.error(saveName+"上传失败");
             disconnect(ftpClient);
             e.printStackTrace();
         }

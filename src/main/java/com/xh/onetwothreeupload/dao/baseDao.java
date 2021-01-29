@@ -16,5 +16,7 @@ public interface baseDao extends BaseMapper<T> {
     List<SaleDTO> getSaleList();
     List<PurDTO> getPurList();
     List<StoreDTO> getStoreList();
+    void updateSale();
+    void updatePur();
 
 }

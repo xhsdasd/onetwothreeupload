@@ -63,8 +63,8 @@ public class Test {
                 List<SaleDTO> saleList = baseDao.getSaleList();
                 if(saleList!=null&&saleList.size()>0) {
                     getDataStreamAndUpload(saleFileName, saleList, SaleDTO.class);
+                    baseDao.updateSale();
                 }
-                baseDao.updateSale();
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 log.error("上传销售数据错误");
@@ -76,8 +76,9 @@ public class Test {
                 List<PurDTO> purList = baseDao.getPurList();
                 if(purList!=null&&purList.size()>0) {
                     getDataStreamAndUpload(purFileName, purList, PurDTO.class);
+                    baseDao.updatePur();
                 }
-                baseDao.updatePur();
+
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 log.error("上传采购数据错误");

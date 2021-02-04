@@ -3,6 +3,7 @@ package com.xh.onetwothreeupload.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,7 +16,8 @@ import java.io.InputStream;
  */
 @Slf4j
 public class FTPTools {
-
+    /** 本地字符编码 */
+    private static String LOCAL_CHARSET = "gb2312";
 
     //设置私有不能实例化
     private FTPTools() {
@@ -90,12 +92,21 @@ public class FTPTools {
         boolean flag = false;
         try {
             ftpClient.connect("DSCN.pharmeyes.com",40000);
-            ftpClient.enterLocalPassiveMode();
-            ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
-            ftpClient.setControlEncoding("UTF-8");
+//            ftpClient.connect("192.168.0.128",21);
+
+
             if (ftpClient.login("C44000074","DSCNC44000074!#$")) {
-//                log.info("连接ftp成功");
+//            if (ftpClient.login("ftp","")) {
+                if (FTPReply.isPositiveCompletion(ftpClient.sendCommand(
+                        "OPTS UTF8", "ON"))) {// 开启服务器对UTF-8的支持，如果服务器支持就用UTF-8编码，否则就使用本地编码（GBK）.
+                    LOCAL_CHARSET = "UTF-8";
+                }
+                ftpClient.setControlEncoding(LOCAL_CHARSET);
+                ftpClient.enterLocalPassiveMode();// 设置被动模式
+                ftpClient.setFileType(FTPClient.BINARY_FILE_TYPE);
+
                 flag = true;
+
             } else {
                 log.error("连接ftp失败，可能用户名或密码错误");
                 try {

@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
+import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -38,7 +39,7 @@ public class Test {
     private ThreadPoolExecutor executor;
 
     @Scheduled(cron = "0 0 0 * * ?")
-//    @Scheduled(fixedRate = 1000*60*5)
+//    @Scheduled(fixedRate = 1000*60*30)
     public void job1() throws FileNotFoundException, ExecutionException, InterruptedException {
 
         //获取当前日期
@@ -61,11 +62,11 @@ public class Test {
         CompletableFuture<Void> saleFunture = CompletableFuture.runAsync(() -> {
             try {
                 List<SaleDTO> saleList = baseDao.getSaleList();
+                getDataStreamAndUpload(saleFileName, saleList, SaleDTO.class);
                 if(saleList!=null&&saleList.size()>0) {
-                    getDataStreamAndUpload(saleFileName, saleList, SaleDTO.class);
                     baseDao.updateSale();
                 }
-            } catch (FileNotFoundException e) {
+            } catch (FileNotFoundException | UnsupportedEncodingException e) {
                 e.printStackTrace();
                 log.error("上传销售数据错误");
             }
@@ -74,12 +75,12 @@ public class Test {
         CompletableFuture<Void> purFunture = CompletableFuture.runAsync(() -> {
             try {
                 List<PurDTO> purList = baseDao.getPurList();
+                getDataStreamAndUpload(purFileName, purList, PurDTO.class);
                 if(purList!=null&&purList.size()>0) {
-                    getDataStreamAndUpload(purFileName, purList, PurDTO.class);
                     baseDao.updatePur();
                 }
 
-            } catch (FileNotFoundException e) {
+            } catch (FileNotFoundException | UnsupportedEncodingException e) {
                 e.printStackTrace();
                 log.error("上传采购数据错误");
             }
@@ -88,10 +89,10 @@ public class Test {
         CompletableFuture<Void> storeFunture = CompletableFuture.runAsync(() -> {
             try {
                 List<StoreDTO> storeList = baseDao.getStoreList();
-                if(storeList!=null&&storeList.size()>0) {
+
                     getDataStreamAndUpload(storeFileName, storeList, StoreDTO.class);
-                }
-            } catch (FileNotFoundException e) {
+
+            } catch (FileNotFoundException | UnsupportedEncodingException e) {
                 e.printStackTrace();
                 log.error("上传库存数据错误");
             }
@@ -110,14 +111,17 @@ public class Test {
      * @param clas     对应Excel头
      * @throws FileNotFoundException
      */
-    private void getDataStreamAndUpload(String fileName, List data, Class clas) throws FileNotFoundException {
+    private void getDataStreamAndUpload(String fileName, List data, Class clas) throws FileNotFoundException, UnsupportedEncodingException {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
+
         ExcelWriter writer = new ExcelWriterBuilder()
                 .autoCloseStream(true)
                 .excelType(ExcelTypeEnum.XLSX)
                 .file(out)
                 .head(clas)
                 .build();
+
+
         // xlsx文件上上限是104W行左右,这里如果超过104W需要分Sheet
         WriteSheet writeSheet = new WriteSheet();
         writeSheet.setSheetName("target");
@@ -126,6 +130,7 @@ public class Test {
 
 //                write(new ByteArrayInputStream(out.toByteArray()),"C:/Users/Administrator/Desktop/新建文件夹",fileName);
 //ftp上传
+
         FTPTools.upload(new ByteArrayInputStream(out.toByteArray()), fileName);
     }
 

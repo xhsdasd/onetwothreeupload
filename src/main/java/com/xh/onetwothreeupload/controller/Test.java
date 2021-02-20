@@ -16,7 +16,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
-import java.nio.charset.Charset;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -38,8 +37,8 @@ public class Test {
     @Autowired
     private ThreadPoolExecutor executor;
 
-    @Scheduled(cron = "0 0 0 * * ?")
-//    @Scheduled(fixedRate = 1000*60*30)
+//    @Scheduled(cron = " 0 0 12 * * ? ")
+    @Scheduled(fixedRate = 1000*60*60*24)
     public void job1() throws FileNotFoundException, ExecutionException, InterruptedException {
 
         //获取当前日期

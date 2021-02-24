@@ -4,8 +4,6 @@ package com.xh.onetwothreeupload.to;
 import com.alibaba.excel.annotation.ExcelProperty;
 import lombok.Data;
 
-import java.math.BigDecimal;
-
 /**
  * @author throwable
  * @version v1.0
@@ -40,10 +38,10 @@ public class SaleDTO {
     private String price ;//经销商系统中记录的该笔流向的实际采购金额（含税） "
 @ExcelProperty(value ="金额 ")
     private String amount ;//产品生产厂家名称"
-    @ExcelProperty(value ="收货地址")
-    private String address;//实际配送地址
     @ExcelProperty(value ="生产厂家")
     private String manufacturer  ;//官方规定产品特有编码 "
+    @ExcelProperty(value ="收货地址")
+    private String address;//实际配送地址
 @ExcelProperty(value ="批准文号 ")
     private String approvalNo ;//数据采集时间(使用我司软件无需此字段) "
 @ExcelProperty(value ="创建时间 ")

@@ -11,6 +11,7 @@ import com.xh.onetwothreeupload.to.SaleDTO;
 import com.xh.onetwothreeupload.to.StoreDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Component
 @EnableScheduling
 @Slf4j
+@Lazy(false)
 public class Test {
     @Autowired
     private baseDao baseDao;
@@ -37,8 +39,8 @@ public class Test {
     @Autowired
     private ThreadPoolExecutor executor;
 
-//    @Scheduled(cron = " 0 0 12 * * ? ")
-    @Scheduled(fixedRate = 1000*60*60*24)
+    @Scheduled(cron = " 3 0 8 * * ? ")
+//    @Scheduled(fixedRate = 1000*60*60*24)
     public void job1() throws FileNotFoundException, ExecutionException, InterruptedException {
 
         //获取当前日期
@@ -56,7 +58,7 @@ public class Test {
 //    日： DSCN_ETMS Code_I_YYYYMMDDHHMMSS_Daily.csv
         String saleFileName = "DSCN_C44000074_S_" + time + "_YTD.csv";
         String purFileName = "DSCN_C44000074_P_" + time + "_YTD.csv";
-        String storeFileName = "DSCN_C44000074_I_" + time + "_YTD.csv";
+        String storeFileName = "DSCN_C44000074_I_" + time + "_Daily.csv";
 
         CompletableFuture<Void> saleFunture = CompletableFuture.runAsync(() -> {
             try {

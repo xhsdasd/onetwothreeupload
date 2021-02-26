@@ -39,7 +39,7 @@ public class Test {
     @Autowired
     private ThreadPoolExecutor executor;
 
-    @Scheduled(cron = " 3 0 8 * * ? ")
+    @Scheduled(cron = " 3 56 8 * * ? ")
 //    @Scheduled(fixedRate = 1000*60*60*24)
     public void job1() throws FileNotFoundException, ExecutionException, InterruptedException {
 

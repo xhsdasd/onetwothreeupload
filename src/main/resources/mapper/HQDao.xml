@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xh.onetwothreeupload.dao.HQDao">
+
+    <select id="getFlowList" resultType="com.xh.onetwothreeupload.to.hq.FlowOrSaleDTO">
+        select
+        ROW_NUMBER() OVER(ORDER BY a.dates asc) as id,
+        businesscode,
+        businessname,
+        c.goodscode,
+        c.goodsname,
+        c.goodsspec,
+        b.unit,
+        a.dates,
+        b.num,
+        b.Price,
+        f.batchcode,
+        CONVERT(CHAR(10),GETDATE(),120) as cradates,
+        CONVERT(CHAR(10),GETDATE(),120) as uploaddate,
+        case when right(a.dates,2)>=26 then left(CONVERT(varchar(100), DATEADD(mm, 1, a.dates ), 23),8)+'01' else
+        left(a.dates,8)+'01' end flowdate
+        from saleoutmt a
+        join saleoutdt b on a.billno=b.billno
+        join goodsdoc c on c.goodsid=b.goodsid
+        join goodsattr d on d.goodsid=c.goodsid
+        join businessdoc e on a.clientid=e.businessid
+        join batchcode f on f.AngleId=b.AngleId and f.goodsid=b.goodsid
+        where d.sclb='沈阳红旗' and a.ruleid='4szcn61oa8b0tz79' and a.dates>='2021-05-25'
+        <if test="type=='flow'">
+            and a.dates>=dateadd(dd,-35,getdate())
+        </if>
+        <if test="type=='sale'">
+            and a.dates>=dateadd(dd,-60,getdate())
+        </if>
+        order by a.dates asc
+    </select>
+    <select id="getPurList" resultType="com.xh.onetwothreeupload.to.hq.PurDTO">
+select
+ROW_NUMBER() OVER(ORDER BY a.dates asc) as id,
+c.goodscode,
+c.goodsname,
+c.goodsspec,
+b.unit,
+a.dates,
+b.num,
+b.Price,
+f.batchcode,
+CONVERT(CHAR(10),GETDATE(),120) as cradates,
+CONVERT(CHAR(10),GETDATE(),120) as uploaddate
+from purinmt a
+join purindt b on a.billno=b.billno
+join goodsdoc c on c.goodsid=b.goodsid
+join goodsattr d on d.goodsid=c.goodsid
+join batchcode f on f.AngleId=b.AngleId and f.goodsid=b.goodsid
+where d.sclb='沈阳红旗' and a.ruleid='12ealvx84t7bl04x' and a.dates>='2021-05-25'
+ and a.dates>=dateadd(dd,-90,getdate())
+order by a.dates asc
+
+    </select>
+    <select id="getStockList" resultType="com.xh.onetwothreeupload.to.hq.StoreDTO">
+        select
+ROW_NUMBER() OVER(ORDER BY f.batchcode asc) as id,
+CONVERT(CHAR(10),GETDATE(),120) as date,
+c.goodscode,
+c.goodsname,
+c.goodsspec,
+h.unit,
+g.PlaceNum as num,
+f.gebjj  as Price,
+f.batchcode ,
+g.placenum*f.gebjj as amount ,
+CONVERT(CHAR(10),GETDATE(),120) as cradates,
+CONVERT(CHAR(10),GETDATE(),120) as uploaddate
+from
+ goodsdoc c
+join goodsattr d on d.goodsid=c.goodsid
+join batchcode f on f.goodsid=c.goodsid
+join AngleBalance g on g.AngleId=f.AngleId and g.goodsid=c.goodsid
+join PGPrice h on h.goodsid=c.goodsid
+where d.sclb='沈阳红旗' and h.isbase='Y'
+order by f.batchcode asc
+    </select>
+</mapper>

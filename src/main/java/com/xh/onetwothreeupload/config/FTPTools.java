@@ -1,6 +1,7 @@
 package com.xh.onetwothreeupload.config;
 
 
+import com.xh.onetwothreeupload.to.HostVo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
@@ -34,13 +35,14 @@ public class FTPTools {
      * @param workingPath 服务器的工作目录
      * @param inputStream 文件的输入流
      * @param saveName    要保存的文件名
+     * @param hostVo
      * @return
      */
-    public static boolean upload(InputStream inputStream, String saveName) {
+    public static boolean upload(InputStream inputStream, String saveName, HostVo hostVo) {
         boolean flag = false;
         FTPClient ftpClient = new FTPClient();
-        //1 测试连接
-        if (connect(ftpClient)) {
+
+        if (connect(ftpClient,hostVo.getHostname(),hostVo.getPort(),hostVo.getUsername(),hostVo.getPassword())) {
             try {
                 //2 检查工作目录是否存在
                 if (ftpClient.changeWorkingDirectory("/")) {
@@ -72,7 +74,7 @@ public class FTPTools {
                 ftpClient.disconnect();
 //                log.error("已关闭连接");
             } catch (IOException e) {
-                log.error("没有关闭连接");
+                log.error("关闭连接错误");
                 e.printStackTrace();
             }
         }
@@ -88,15 +90,13 @@ public class FTPTools {
      * @param password  密码
      * @return 返回真则能连接
      */
-    public static boolean connect(FTPClient ftpClient) {
+    public static boolean connect(FTPClient ftpClient,String hostname,Integer port,String username,String password) {
         boolean flag = false;
         try {
-            ftpClient.connect("DSCN.pharmeyes.com",40000);
-//            ftpClient.connect("192.168.0.128",21);
+            ftpClient.connect(hostname,port);
 
 
-            if (ftpClient.login("C44000074","DSCNC44000074!#$")) {
-//            if (ftpClient.login("ftp","")) {
+            if (ftpClient.login(username,password)) {
                 if (FTPReply.isPositiveCompletion(ftpClient.sendCommand(
                         "OPTS UTF8", "ON"))) {// 开启服务器对UTF-8的支持，如果服务器支持就用UTF-8编码，否则就使用本地编码（GBK）.
                     LOCAL_CHARSET = "UTF-8";
@@ -108,7 +108,7 @@ public class FTPTools {
                 flag = true;
 
             } else {
-                log.error("连接ftp失败，可能用户名或密码错误");
+                log.error(hostname+"连接ftp失败，可能用户名或密码错误");
                 try {
                     disconnect(ftpClient);
                 } catch (Exception e) {
@@ -116,7 +116,7 @@ public class FTPTools {
                 }
             }
         } catch (IOException e) {
-            log.error("连接失败，可能ip或端口错误");
+            log.error(hostname+"连接失败，可能ip或端口错误");
             e.printStackTrace();
         }
         return flag;
@@ -133,10 +133,12 @@ public class FTPTools {
     public static boolean storeFile(FTPClient ftpClient, String saveName, InputStream fileInputStream) {
         boolean flag = false;
         try {
-            if (ftpClient.storeFile(saveName, fileInputStream)) {
+            if (ftpClient.storeFile(new String(saveName.getBytes("UTF-8"),"iso-8859-1"), fileInputStream)) {
                 flag = true;
                 log.error(saveName+"上传成功");
                 disconnect(ftpClient);
+            }else {
+                log.error(saveName+"上传失败");
             }
         } catch (IOException e) {
             log.error(saveName+"上传失败");

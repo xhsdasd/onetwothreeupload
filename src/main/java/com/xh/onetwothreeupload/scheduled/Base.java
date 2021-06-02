@@ -114,6 +114,7 @@ public class Base {
      */
     @Scheduled(cron = " 0 0 3 ? * 1,2,3,4,5 ")
 //    @Scheduled(fixedRate = 1000 * 60 * 60 * 24)
+//    @Scheduled(cron = " 3 56 10 * * ? ")
     public void syhq() throws ExecutionException, InterruptedException {
 
 //    *命名规范：（说明：公司名称指的是广东广集医药有限公司）
@@ -132,7 +133,7 @@ public class Base {
         HostVo hostVo = new HostVo("ftp.hqyy.com", 21, "gdgjyyyxgs", "gdgjyyyxgs2019@");
 
 
-        CompletableFuture<Void> flowFunture = CompletableFuture.runAsync(() -> {
+        CompletableFuture<Void> flowFuture = CompletableFuture.runAsync(() -> {
             try {
                 List<FlowOrSaleDTO> flowList = HQDao.getFlowList("flow");
                 getDataStreamAndUpload(flowFileName, flowList, FlowOrSaleDTO.class, hostVo);
@@ -140,8 +141,10 @@ public class Base {
                 e.printStackTrace();
                 log.error("上传沈阳红旗流向数据错误");
             }
+
         }, executor);
-        CompletableFuture<Void> saleFunture = CompletableFuture.runAsync(() -> {
+
+        CompletableFuture<Void> saleFuture = CompletableFuture.runAsync(() -> {
             try {
                 List<FlowOrSaleDTO> saleList = HQDao.getFlowList("sale");
                 getDataStreamAndUpload(sixtySaleFileName, saleList, FlowOrSaleDTO.class, hostVo);
@@ -151,7 +154,7 @@ public class Base {
             }
         }, executor);
 
-        CompletableFuture<Void> purFunture = CompletableFuture.runAsync(() -> {
+        CompletableFuture<Void> purFuture = CompletableFuture.runAsync(() -> {
             try {
                 List<com.xh.onetwothreeupload.to.hq.PurDTO> purList = HQDao.getPurList();
                 getDataStreamAndUpload(purFileName, purList, com.xh.onetwothreeupload.to.hq.PurDTO.class, hostVo);
@@ -161,18 +164,18 @@ public class Base {
             }
         }, executor);
 
-        CompletableFuture<Void> storeFunture = CompletableFuture.runAsync(() -> {
+        CompletableFuture<Void> storeFuture = CompletableFuture.runAsync(() -> {
             try {
                 List<com.xh.onetwothreeupload.to.hq.StoreDTO> storeList = HQDao.getStockList();
-                getDataStreamAndUpload(storeFileName, storeList, com.xh.onetwothreeupload.to.hq.StoreDTO.class, hostVo );
+                getDataStreamAndUpload(storeFileName, storeList, com.xh.onetwothreeupload.to.hq.StoreDTO.class, hostVo);
             } catch (FileNotFoundException | UnsupportedEncodingException e) {
                 e.printStackTrace();
                 log.error("上传沈阳红旗库存数据错误");
             }
+
         }, executor);
 
-        CompletableFuture.allOf(flowFunture, saleFunture, purFunture, storeFunture).get();
-
+        CompletableFuture.allOf(flowFuture,purFuture,storeFuture,saleFuture).get();
 
     }
 

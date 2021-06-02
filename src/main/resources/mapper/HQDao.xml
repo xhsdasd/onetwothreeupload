@@ -26,7 +26,7 @@
         join goodsattr d on d.goodsid=c.goodsid
         join businessdoc e on a.clientid=e.businessid
         join batchcode f on f.AngleId=b.AngleId and f.goodsid=b.goodsid
-        where d.sclb='沈阳红旗' and a.ruleid='4szcn61oa8b0tz79' and a.dates>='2021-05-25'
+        where d.sclb='沈阳红旗' and a.ruleid='4szcn61oa8b0tz79' and a.dates>='2021-04-26'
         <if test="type=='flow'">
             and a.dates>=dateadd(dd,-35,getdate())
         </if>
@@ -53,7 +53,7 @@ join purindt b on a.billno=b.billno
 join goodsdoc c on c.goodsid=b.goodsid
 join goodsattr d on d.goodsid=c.goodsid
 join batchcode f on f.AngleId=b.AngleId and f.goodsid=b.goodsid
-where d.sclb='沈阳红旗' and a.ruleid='12ealvx84t7bl04x' and a.dates>='2021-05-25'
+where d.sclb='沈阳红旗' and a.ruleid='12ealvx84t7bl04x' and a.dates>='2021-04-26'
  and a.dates>=dateadd(dd,-90,getdate())
 order by a.dates asc
 

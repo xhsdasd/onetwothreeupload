@@ -133,13 +133,19 @@ public class FTPTools {
     public static boolean storeFile(FTPClient ftpClient, String saveName, InputStream fileInputStream) {
         boolean flag = false;
         try {
-            if (ftpClient.storeFile(new String(saveName.getBytes("UTF-8"),"iso-8859-1"), fileInputStream)) {
-                flag = true;
-                log.error(saveName+"上传成功");
-                disconnect(ftpClient);
-            }else {
-                log.error(saveName+"上传失败");
+            boolean retry=true;
+            while(retry) {
+                log.error("重传开始！");
+                if (ftpClient.storeFile(new String(saveName.getBytes("UTF-8"), "iso-8859-1"), fileInputStream)) {
+                    flag = true;
+                    log.error(saveName + "上传成功");
+                } else {
+                    log.error(saveName + "上传失败");
+                    log.error("重传结束！");
+                    retry=false;
+                }
             }
+            disconnect(ftpClient);
         } catch (IOException e) {
             log.error(saveName+"上传失败");
             disconnect(ftpClient);
